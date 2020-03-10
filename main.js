@@ -39,7 +39,7 @@ destinations.upload = async (req, res) => {
 	}
 	
 	//placeholder
-	const $code = 'abc1234';
+	const code = 'abc1234';
 	
 	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
 	
