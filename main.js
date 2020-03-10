@@ -1,5 +1,6 @@
 const http = require('http');
 const url = require('url');
+const fs = require('fs');
 
 const port = 8080;
 
@@ -16,6 +17,33 @@ destinations.upload = async (req, res) => {
 		return;
 		
 	}
+	
+	let extension;
+	
+	if (req.headers['content-type'] === 'image/png') {
+		
+		extension = 'png';
+		
+	} else if (req.headers['content-type'] === 'image/jpeg') {
+		
+		extension = 'jpg';
+		
+	} else {
+		
+		res.statusCode = 400;
+		res.setHeader('Content-type', 'text/plain');
+		res.end('400 - Bad Request');
+		
+		return;
+		
+	}
+	
+	//placeholder
+	const $code = 'abc1234';
+	
+	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
+	
+	req.pipe(writeStream);
 	
 };
 
