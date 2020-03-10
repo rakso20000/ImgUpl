@@ -74,7 +74,7 @@ const view = async (req, res, code) => {
 const handleRequest = async (req, res) => {
 	
 	const parsedUrl = url.parse(req.url);
-	const pathName = parsedUrl.pathname;
+	const pathName = parsedUrl.pathname.substr(1);
 	
 	if (destinations.hasOwnProperty(pathName)) {
 		
