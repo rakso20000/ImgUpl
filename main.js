@@ -7,8 +7,8 @@ const {MongoClient} = require('mongodb');
 const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const codeLength = 5;
-const port = 8080;
-const domain = 'http://localhost:8080';
+const port = 25235;
+const domain = 'http://localhost:25235';
 
 let mongoUsers;
 let mongoImages;
