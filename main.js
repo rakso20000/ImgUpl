@@ -114,9 +114,23 @@ const view = async (req, res, code) => {
 	
 	if (!code.match(/^[0-9a-zA-Z]+$/)) {
 		
-		res.statusCode = 400;
+		res.statusCode = 404;
 		res.setHeader('Content-type', 'text/plain');
-		res.end('400 - Bad Request');
+		res.end('404 - Not Found');
+		
+		return;
+		
+	}
+	
+	const img = await mongoImages.findOne({
+		code
+	});
+	
+	if (img === null) {
+		
+		res.statusCode = 404;
+		res.setHeader('Content-type', 'text/plain');
+		res.end('404 - Not Found');
 		
 		return;
 		
