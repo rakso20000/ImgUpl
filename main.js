@@ -3,6 +3,7 @@ const url = require('url');
 const fs = require('fs');
 
 const port = 8080;
+const domain = 'http://localhost:8080';
 
 const destinations = {};
 
@@ -44,6 +45,14 @@ destinations.upload = async (req, res) => {
 	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
 	
 	req.pipe(writeStream);
+	
+	req.on('end', () => {
+		
+		res.statusCode = 200;
+		res.setHeader('Content-type', 'text/plain');
+		res.end(`${domain}/${code}`);
+		
+	});
 	
 };
 
