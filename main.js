@@ -92,6 +92,8 @@ destinations.upload = async (req, res) => {
 	
 	req.on('end', () => {
 		
+		console.log(`User ${user.id} uploaded ${code}.${extension}`);
+		
 		res.statusCode = 200;
 		res.setHeader('Content-type', 'text/plain');
 		res.end(`${domain}/${code}`);
@@ -186,9 +188,13 @@ const init = async () => {
 	mongoUsers = db.collection('users');
 	mongoImages = db.collection('images');
 	
+	console.log('Loaded mongodb');
+	
 	const server = http.createServer(handleRequest);
 	
 	server.listen(port, '0.0.0.0');
+	
+	console.log(`Listening on port ${port}`);
 	
 };
 
