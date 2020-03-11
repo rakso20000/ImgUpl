@@ -79,6 +79,42 @@ destinations.upload = async (req, res) => {
 		
 	}
 	
+	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
+	
+	let errorOccured = false;
+	
+	writeStream.on('error', err => {
+		
+		console.error(err);
+		
+		errorOccured = true;
+		
+	});
+	
+	req.pipe(writeStream);
+	
+	await new Promise(resolve => req.on('end', resolve));
+	
+	writeStream.end();
+	
+	if (!errorOccured)
+		await new Promise(resolve => {
+			
+			writeStream.on('error', resolve);
+			writeStream.on('finish', resolve);
+			
+		});
+	
+	if (errorOccured) {
+		
+		res.statusCode = 500;
+		res.setHeader('Content-type', 'text/plain');
+		res.end('500 - Internal Server Error');
+		
+		return;
+		
+	}
+	
 	await mongoImages.insertOne({
 		code,
 		type,
@@ -86,19 +122,11 @@ destinations.upload = async (req, res) => {
 		timestamp: Date.now()
 	});
 	
-	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
+	console.log(`User ${user.id} uploaded ${code}.${extension}`);
 	
-	req.pipe(writeStream);
-	
-	req.on('end', () => {
-		
-		console.log(`User ${user.id} uploaded ${code}.${extension}`);
-		
-		res.statusCode = 200;
-		res.setHeader('Content-type', 'text/plain');
-		res.end(`${domain}/${code}`);
-		
-	});
+	res.statusCode = 200;
+	res.setHeader('Content-type', 'text/plain');
+	res.end(`${domain}/${code}`);
 	
 };
 
