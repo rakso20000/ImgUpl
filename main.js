@@ -8,6 +8,7 @@ const port = 8080;
 const domain = 'http://localhost:8080';
 
 let mongoUsers;
+let mongoImages;
 
 const destinations = {};
 
@@ -37,13 +38,15 @@ destinations.upload = async (req, res) => {
 		
 	}
 	
+	const type = req.headers['content-type'];
+	
 	let extension;
 	
-	if (req.headers['content-type'] === 'image/png') {
+	if (type === 'image/png') {
 		
 		extension = 'png';
 		
-	} else if (req.headers['content-type'] === 'image/jpeg') {
+	} else if (type === 'image/jpeg') {
 		
 		extension = 'jpg';
 		
@@ -59,6 +62,13 @@ destinations.upload = async (req, res) => {
 	
 	//placeholder
 	const code = 'abc1234';
+	
+	await mongoImages.insertOne({
+		code,
+		type,
+		author: user.id,
+		timestamp: Date.now()
+	});
 	
 	const writeStream = fs.createWriteStream(`images/${code}.${extension}`);
 	
@@ -145,6 +155,7 @@ const init = async () => {
 	const db = client.db('imgupl');
 	
 	mongoUsers = db.collection('users');
+	mongoImages = db.collection('images');
 	
 	const server = http.createServer(handleRequest);
 	
