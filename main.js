@@ -7,11 +7,25 @@ const {MongoClient} = require('mongodb');
 const port = 8080;
 const domain = 'http://localhost:8080';
 
-let db;
+let mongoUsers;
 
 const destinations = {};
 
 destinations.upload = async (req, res) => {
+	
+	const user = await mongoUsers.findOne({
+		apiKey: req.headers['x-api-key']
+	});
+	
+	if (user === null) {
+		
+		res.statusCode = 401;
+		res.setHeader('Content-type', 'text/plain');
+		res.end('401 - Unauthorized');
+		
+		return;
+		
+	}
 	
 	if (req.method !== 'POST') {
 		
@@ -128,7 +142,9 @@ const init = async () => {
 		
 	}
 	
-	db = client.db('img_upl');
+	const db = client.db('imgupl');
+	
+	mongoUsers = db.collection('users');
 	
 	const server = http.createServer(handleRequest);
 	
