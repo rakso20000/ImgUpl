@@ -4,6 +4,9 @@ const fs = require('fs');
 
 const {MongoClient} = require('mongodb');
 
+const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+const codeLength = 5;
 const port = 8080;
 const domain = 'http://localhost:8080';
 
@@ -60,8 +63,21 @@ destinations.upload = async (req, res) => {
 		
 	}
 	
-	//placeholder
-	const code = 'abc1234';
+	let code = '';
+	
+	while (code === '') {
+		
+		for (let i = 0; i < codeLength; i++)
+			code += chars.charAt(Math.floor(Math.random() * chars.length));
+		
+		const img = await mongoImages.findOne({
+			code
+		});
+		
+		if (img !== null)
+			code = '';
+		
+	}
 	
 	await mongoImages.insertOne({
 		code,
