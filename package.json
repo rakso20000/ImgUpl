@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/rakso20000/ImgUpl/issues"
   },
-  "homepage": "https://github.com/rakso20000/ImgUpl#readme"
+  "homepage": "https://github.com/rakso20000/ImgUpl#readme",
+  "dependencies": {
+    "mongodb": "^3.5.4"
+  }
 }

@@ -2,8 +2,12 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 
+const {MongoClient} = require('mongodb');
+
 const port = 8080;
 const domain = 'http://localhost:8080';
+
+let db;
 
 const destinations = {};
 
@@ -108,6 +112,34 @@ const handleRequest = async (req, res) => {
 	
 };
 
-const server = http.createServer(handleRequest);
+const init = async () => {
+	
+	const client = new MongoClient('mongodb://localhost:27017', {
+		useUnifiedTopology: true
+	});
+	
+	await client.connect();
+	
+	if (!client.isConnected()) {
+		
+		console.error('Could not connect to mongodb');
+		
+		process.exit(1);
+		
+	}
+	
+	db = client.db('img_upl');
+	
+	const server = http.createServer(handleRequest);
+	
+	server.listen(port, '0.0.0.0');
+	
+};
 
-server.listen(port, '0.0.0.0');
+init().catch(err => {
+	
+	console.error(err);
+	
+	process.exit(1);
+	
+});
