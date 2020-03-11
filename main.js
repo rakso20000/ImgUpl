@@ -8,7 +8,7 @@ const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const codeLength = 5;
 const port = 25235;
-const domain = 'http://localhost:25235';
+const domain = 'https://img.rakso.me';
 
 let mongoUsers;
 let mongoImages;
