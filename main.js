@@ -78,6 +78,17 @@ const view = async (req, res, code) => {
 		
 	}
 	
+	//placeholder
+	const extension = 'png';
+	
+	const readStream = fs.createReadStream(`images/${code}.${extension}`);
+	
+	res.statusCode = 200;
+	res.setHeader('Content-type', extension === 'png' ? 'image/png' : 'image/jpeg');
+	readStream.pipe(res);
+	
+	readStream.on('end', () => res.end());
+	
 };
 
 const handleRequest = async (req, res) => {
