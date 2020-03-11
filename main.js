@@ -41,6 +41,17 @@ destinations.upload = async (req, res) => {
 		
 	}
 	
+	try {
+		
+		await fs.promises.access('images');
+		
+	} catch (err) {
+		
+		if (err.code === 'ENOENT')
+			fs.promises.mkdir('images');
+		
+	}
+	
 	const type = req.headers['content-type'];
 	
 	let extension;
