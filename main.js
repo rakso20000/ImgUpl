@@ -167,7 +167,7 @@ destinations.list = async (req, res) => {
 	
 	await new Promise(resolve => imagesCursor.forEach(({code}) => {
 		
-		imagesStr += listImgElem.replace('%code%', code);
+		imagesStr += listImgElem.replace(/%code%/g, code);
 		
 	}, resolve));
 	
