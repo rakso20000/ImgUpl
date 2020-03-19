@@ -13,6 +13,10 @@ const domain = 'http://localhost:25235';
 let mongoUsers;
 let mongoImages;
 
+let listHTML;
+
+let listImgElem;
+
 const destinations = {};
 
 destinations.upload = async (req, res) => {
@@ -141,6 +145,38 @@ destinations.upload = async (req, res) => {
 	
 };
 
+destinations.list = async (req, res) => {
+	
+	if (req.method !== 'GET') {
+		
+		res.statusCode = 405;
+		res.setHeader('Content-type', 'text/plain');
+		res.end('405 - Method Not Allowed');
+		
+		return;
+		
+	}
+	
+	const imagesCursor = mongoImages.find();
+	
+	imagesCursor.sort({
+		timestamp: -1
+	});
+	
+	let imagesStr = '';
+	
+	await new Promise(resolve => imagesCursor.forEach(({code}) => {
+		
+		imagesStr += listImgElem.replace('%code%', code);
+		
+	}, resolve));
+	
+	res.statusCode = 200;
+	res.setHeader('Content-type', 'text/html');
+	res.end(listHTML.replace('%images%', imagesStr));
+	
+};
+
 const view = async (req, res, code) => {
 	
 	if (req.method !== 'GET') {
@@ -207,6 +243,25 @@ const handleRequest = async (req, res) => {
 };
 
 const init = async () => {
+	
+	try {
+		
+		const listHTMLP = fs.promises.readFile('html/list.html', 'utf8');
+		
+		const listImgElemP = fs.promises.readFile('elems/list.img.elem', 'utf8');
+		
+		[listHTML, listImgElem] = await Promise.all([listHTMLP, listImgElemP]);
+		
+	} catch (err) {
+		
+		console.error('Error reading files:');
+		console.error(err);
+		
+		process.exit(1);
+		
+	}
+	
+	listImgElem = listImgElem.replace('%domain%', domain);
 	
 	const client = new MongoClient('mongodb://localhost:27017', {
 		useUnifiedTopology: true
